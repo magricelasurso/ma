@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeonDesire Arcade | Strip Dados</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .neon-text {
+            text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff, 0 0 15px #ff00ff;
+        }
+        .neon-border {
+            box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+        }
+        .dice-container {
+            perspective: 1000px;
+        }
+        .dice {
+            transform-style: preserve-3d;
+            transition: transform 1.5s ease-out;
+        }
+        .rolling {
+            animation: roll 1.5s ease-out;
+        }
+        @keyframes roll {
+            0% { transform: rotateX(0) rotateY(0) rotateZ(0); }
+            100% { transform: rotateX(720deg) rotateY(720deg) rotateZ(720deg); }
+        }
+    </style>
+</head>
+<body class="gradient-bg text-gray-100 min-h-screen font-sans">
+    <!-- Header -->
+    <header class="bg-black bg-opacity-70 border-b border-purple-900">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-dice text-3xl text-pink-500"></i>
+                <h1 class="text-2xl font-bold neon-text">Strip Dados</h1>
+            </div>
+            <a href="index.html" class="bg-pink-600 hover:bg-pink-700 px-4 py-2 rounded-full transition">
+                <i class="fas fa-arrow-left mr-2"></i>Voltar
+            </a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- D20 -->
+                <div class="dice-container text-center">
+                    <div class="dice bg-gray-900 p-6 rounded-xl neon-border mb-4" id="d20">
+                        <span class="text-4xl font-bold text-pink-400">20</span>
+                    </div>
+                    <button onclick="rollDice(20)" class="w-full bg-pink-600 hover:bg-pink-700 py-2 rounded-lg transition">
+                        Rolar D20 <i class="fas fa-sync-alt ml-2"></i>
+                    </button>
+                    <p class="text-sm mt-2 text-gray-400">Resultado: <span id="result20" class="text-pink-400">-</span></p>
+                </div>
+
+                <!-- D10 -->
+                <div class="dice-container text-center">
+                    <div class="dice bg-gray-900 p-6 rounded-xl neon-border mb-4" id="d10">
+                        <span class="text-4xl font-bold text-purple-400">10</span>
+                    </div>
+                    <button onclick="rollDice(10)" class="w-full bg-purple-600 hover:bg-purple-700 py-2 rounded-lg transition">
+                        Rolar D10 <i class="fas fa-sync-alt ml-2"></i>
+                    </button>
+                    <p class="text-sm mt-2 text-gray-400">Resultado: <span id="result10" class="text-purple-400">-</span></p>
+                </div>
+
+                <!-- D6 -->
+                <div class="dice-container text-center">
+                    <div class="dice bg-gray-900 p-6 rounded-xl neon-border mb-4" id="d6">
+                        <span class="text-4xl font-bold text-blue-400">6</span>
+                    </div>
+                    <button onclick="rollDice(6)" class="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded-lg transition">
+                        Rolar D6 <i class="fas fa-sync-alt ml-2"></i>
+                    </button>
+                    <p class="text-sm mt-2 text-gray-400">Resultado: <span id="result6" class="text-blue-400">-</span></p>
+                </div>
+            </div>
+
+            <!-- Regras -->
+            <div class="mt-12 bg-gray-900 bg-opacity-70 p-6 rounded-xl neon-border">
+                <h2 class="text-2xl font-bold neon-text mb-4"><i class="fas fa-info-circle mr-2"></i>Regras do Jogo</h2>
+                <ul class="list-disc pl-6 text-gray-300 space-y-2">
+                    <li>Cada dado representa uma peça de roupa</li>
+                    <li>O número tirado no dado indica quantas peças devem ser removidas</li>
+                    <li>D20: Peças superiores | D10: Peças inferiores | D6: Acessórios</li>
+                    <li>Jogo para 2-6 jogadores</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function rollDice(sides) {
+            const diceElement = document.getElementById(`d${sides}`);
+            const resultElement = document.getElementById(`result${sides}`);
+
+            // Adiciona animação
+            diceElement.classList.add('rolling');
+            
+            // Gera resultado após animação
+            setTimeout(() => {
+                const result = Math.floor(Math.random() * sides) + 1;
+                resultElement.textContent = result;
+                
+                // Efeito visual do resultado
+                resultElement.classList.add('neon-text');
+                setTimeout(() => resultElement.classList.remove('neon-text'), 1000);
+                
+                // Altera temporariamente a cor do dado
+                diceElement.style.backgroundColor = '#4a044a';
+                setTimeout(() => {
+                    diceElement.style.backgroundColor = '';
+                }, 500);
+                
+            }, 1500);
+
+            // Remove classe de animação
+            setTimeout(() => diceElement.classList.remove('rolling'), 1500);
+        }
+    </script>
+</body>
+</html>
