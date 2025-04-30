@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeonDesire Arcade | Plataforma Interativa 18+</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .neon-text {
+            text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff, 0 0 15px #ff00ff;
+        }
+        .neon-border {
+            box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+        }
+        .neon-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 0, 255, 0.3);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 0, 255, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 0, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 0, 255, 0); }
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="gradient-bg text-gray-100 min-h-screen font-sans">
+    <!-- Age Verification Modal -->
+    <div id="ageModal" class="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4">
+        <div class="bg-gray-900 rounded-xl max-w-md w-full p-8 neon-border">
+            <div class="text-center mb-6">
+                <i class="fas fa-exclamation-triangle text-4xl text-pink-500 mb-4"></i>
+                <h2 class="text-2xl font-bold neon-text">Verificação de Idade</h2>
+                <p class="mt-2 text-gray-300">Este site contém conteúdo adulto exclusivo para maiores de 18 anos</p>
+            </div>
+            <div class="grid gap-4">
+                <button onclick="verifyAge(true)" class="bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-4 rounded-lg transition">
+                    <i class="fas fa-check-circle mr-2"></i> Tenho 18+ anos
+                </button>
+                <button onclick="verifyAge(false)" class="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-lg transition">
+                    <i class="fas fa-times-circle mr-2"></i> Sair do Site
+                </button>
+            </div>
+            <p class="text-xs text-gray-500 mt-4 text-center">Ao entrar, você concorda com nossos <a href="#" class="text-pink-400">Termos de Uso</a> e <a href="#" class="text-pink-400">Política de Privacidade</a></p>
+        </div>
+    </div>
+
+    <!-- Main Content (hidden until age verification) -->
+    <div id="mainContent" class="hidden">
+        <!-- Header -->
+        <header class="bg-black bg-opacity-70 border-b border-purple-900">
+            <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-gamepad text-3xl text-pink-500"></i>
+                    <h1 class="text-2xl font-bold neon-text">NeonDesire Arcade</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative group">
+                        <button class="flex items-center space-x-1 bg-pink-900 hover:bg-pink-800 px-4 py-2 rounded-full transition">
+                            <i class="fas fa-coins text-yellow-400"></i>
+                            <span>1,250</span>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-gray-900 rounded-lg shadow-lg z-10 hidden group-hover:block">
+                            <div class="p-3">
+                                <p class="text-sm mb-2">Saldo: 1,250 ND</p>
+                                <button class="w-full bg-pink-600 hover:bg-pink-700 text-white py-1 px-3 rounded text-sm">
+                                    Comprar Mais
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative group">
+                        <button class="flex items-center space-x-1 bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-full transition">
+                            <i class="fas fa-user-circle"></i>
+                            <span>Visitante</span>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-gray-900 rounded-lg shadow-lg z-10 hidden group-hover:block">
+                            <div class="p-2">
+                                <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-800 rounded"><i class="fas fa-user mr-2"></i> Perfil</a>
+                                <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-800 rounded"><i class="fas fa-cog mr-2"></i> Configurações</a>
+                                <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-800 rounded"><i class="fas fa-sign-out-alt mr-2"></i> Sair</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Navigation -->
+        <nav class="bg-black bg-opacity-50 border-b border-purple-900">
+            <div class="container mx-auto px-4">
+                <div class="flex overflow-x-auto space-x-6 py-3">
+                    <a href="#" class="tab-btn flex items-center space-x-2 px-3 py-2 bg-pink-900 rounded-lg" data-tab="home">
+                        <i class="fas fa-home"></i>
+                        <span>Início</span>
+                    </a>
+                    <a href="#" class="tab-btn flex items-center space-x-2 px-3 py-2 hover:bg-gray-800 rounded-lg transition" data-tab="games">
+                        <i class="fas fa-gamepad"></i>
+                        <span>Minigames</span>
+                    </a>
+                    <a href="#" class="tab-btn flex items-center space-x-2 px-3 py-2 hover:bg-gray-800 rounded-lg transition" data-tab="live">
+                        <i class="fas fa-video"></i>
+                        <span>Interação Ao Vivo</span>
+                    </a>
+                    <a href="#" class="tab-btn flex items-center space-x-2 px-3 py-2 hover:bg-gray-800 rounded-lg transition" data-tab="models">
+                        <i class="fas fa-star"></i>
+                        <span>Modelos Premium</span>
+                    </a>
+                    <a href="#" class="tab-btn flex items-center space-x-2 px-3 py-2 hover:bg-gray-800 rounded-lg transition" data-tab="community">
+                        <i class="fas fa-users"></i>
+                        <span>Comunidade</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="container mx-auto px-4 py-8">
+            <!-- Home Tab -->
+            <div id="home" class="tab-content active">
+                <!-- Hero Section -->
+                <section class="mb-12">
+                    <div class="bg-gradient-to-r from-purple-900 to-pink-800 rounded-xl overflow-hidden">
+                        <div class="grid md:grid-cols-2">
+                            <div class="p-8 md:p-12 flex flex-col justify-center">
+                                <h2 class="text-3xl md:text-4xl font-bold mb-4 neon-text">Sua Plataforma de Entretenimento Adulto</h2>
+                                <p class="text-lg mb-6 text-gray-300">Jogos interativos, modelos ao vivo e experiências compartilhadas em um ambiente seguro e moderado.</p>
+                                <div class="flex flex-wrap gap-3">
+                                    <button class="bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-6 rounded-full transition transform hover:scale-105">
+                                        <i class="fas fa-play mr-2"></i> Começar Agora
+                                    </button>
+                                    <button class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-full transition transform hover:scale-105">
+                                        <i class="fas fa-info-circle mr-2"></i> Como Funciona
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="hidden md:block relative">
+                                <img src="https://via.placeholder.com/600x400/302b63/ffffff?text=NeonDesire+Arcade" alt="Hero" class="w-full h-full object-cover">
+                                <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent">
+                                    <p class="text-sm text-pink-300">Conteúdo exclusivo para maiores de 18 anos</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Features Grid -->
+                <section class="mb-12">
+                    <h2 class="text-2xl font-bold mb-6 neon-text text-center">O Que Oferecemos</h2>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <!-- Feature 1 -->
+                        <div class="bg-gray-900 bg-opacity-70 rounded-xl p-6 neon-card transition">
+                            <div class="bg-pink-900 w-12 h-12 rounded-full flex items-center justify-center mb-4">
+                                <i class="fas fa-gamepad text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Minigames Adultos</h3>
+                            <p class="text-gray-300">Jogos multiplayer e single-player com temas adultos e recompensas excitantes.</p>
+                        </div>
+                        
+                        <!-- Feature 2 -->
+                        <div class="bg-gray-900 bg-opacity-70 rounded-xl p-6 neon-card transition">
+                            <div class="bg-purple-900 w-12 h-12 rounded-full flex items-center justify-center mb-4">
+                                <i class="fas fa-video text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Interação Ao Vivo</h3>
+                            <p class="text-gray-300">Salas de chat por vídeo e texto com moderação e filtros por interesse.</p>
+                        </div>
+                        
+                        <!-- Feature 3 -->
+                        <div class="bg-gray-900 bg-opacity-70 rounded-xl p-6 neon-card transition">
+                            <div class="bg-blue-900 w-12 h-12 rounded-full flex items-center justify-center mb-4">
+                                <i class="fas fa-star text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Modelos Premium</h3>
+                            <p class="text-gray-300">Camgirls verificadas em salas públicas e privadas com diversas temáticas.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Live Models Preview -->
+                <section class="mb-12">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold neon-text">Modelos Ao Vivo</h2>
+                        <a href="#" class="text-pink-400 hover:text-pink-300 flex items-center">
+                            Ver Todos <i class="fas fa-chevron-right ml-2"></i>
+                        </a>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                        <!-- Model 1 -->
+                        <div class="bg-gray-900 rounded-xl overflow-hidden neon-card transition">
+                            <div class="relative pt-[100%]">
+                                <img src="https://via.placeholder.com/300x300/6b21a8/ffffff?text=Model+1" alt="Model" class="absolute inset-0 w-full h-full object-cover">
+                                <div class="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black to-transparent">
+                                    <p class="font-semibold">Sophia</p>
+                                    <p class="text-xs text-pink-300">25 anos</p>
+                                </div>
+                                <div class="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded-full flex items-center">
+                                    <i class="fas fa-circle text-xs mr-1"></i> AO VIVO
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-gray-400">Sala Pública</span>
+                                    <span class="text-xs text-yellow-400">1,250 ND/min</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Model 2 -->
+                        <div class="bg-gray-900 rounded-xl overflow-hidden neon-card transition">
+                            <div class="relative pt-[100%]">
+                                <img src="https://via.placeholder.com/300x300/7e22ce/ffffff?text=Model+2" alt="Model" class="absolute inset-0 w-full h-full object-cover">
+                                <div class="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black to-transparent">
+                                    <p class="font-semibold">Valentina</p>
+                                    <p class="text-xs text-pink-300">28 anos</p>
+                                </div>
+                                <div class="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded-full flex items-center">
+                                    <i class="fas fa-circle text-xs mr-1"></i> AO VIVO
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-gray-400">Privado</span>
+                                    <span class="text-xs text-yellow-400">2,500 ND/min</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Model 3 -->
+                        <div class="bg-gray-900 rounded-xl overflow-hidden neon-card transition">
+                            <div class="relative pt-[100%]">
+                                <img src="https://via.placeholder.com/300x300/d946ef/ffffff?text=Model+3" alt="Model" class="absolute inset-0 w-full h-full object-cover">
+                                <div class="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black to-transparent">
+                                    <p class="font-semibold">Isabella</p>
+                                    <p class="text-xs text-pink-300">22 anos</p>
+                                </div>
+                                <div class="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded-full flex items-center">
+                                    <i class="fas fa-circle text-xs mr-1"></i> AO VIVO
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-gray-400">Grupo (5/10)</span>
+                                    <span class="text-xs text-yellow-400">800 ND/min</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Model 4 -->
+                        <div class="bg-gray-900 rounded-xl overflow-hidden neon-card transition">
+                            <div class="relative pt-[100%]">
+                                <img src="https://via.placeholder.com/300x300/a855f7/ffffff?text=Model+4" alt="Model" class="absolute inset-0 w-full h-full object-cover">
+                                <div class="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black to-transparent">
+                                    <p class="font-semibold">Camila</p>
+                                    <p class="text-xs text-pink-300">30 anos</p>
+                                </div>
+                                <div class="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded-full flex items-center">
+                                    <i class="fas fa-circle text-xs mr-1"></i> AO VIVO
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-gray-400">Sala Temática</span>
+                                    <span class="text-xs text-yellow-400">1,800 ND/min</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Model 5 -->
+                        <div class="bg-gray-900 rounded-xl overflow-hidden neon-card transition">
+                            <div class="relative pt-[100%]">
+                                <img src="https://via.placeholder.com/300x300/c026d3/ffffff?text=Model+5" alt="Model" class="absolute inset-0 w-full h-full object-cover">
+                                <div class="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black to-transparent">
+                                    <p class="font-semibold">Ana</p>
+                                    <p class="text-xs text-pink-300">26 anos</p>
+                                </div>
+                                <div class="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded-full flex items-center">
+                                    <i class="fas fa-circle text-xs mr-1"></i> AO VIVO
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-gray-400">Privado</span>
+                                    <span class="text-xs text-yellow-400">3,000 ND/min</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Popular Games -->
+                <section>
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold neon-text">Minigames Populares</h2>
+                        <a href="#" class="text-pink-400 hover:text-pink-300 flex items-center">
+                            Ver Todos <i class="fas fa-chevron-right ml-2"></i>
+                        </a>
+                    </div>
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Game 1 -->
+                        <div class="bg-gray-900 rounded-xl overflow-hidden neon-card transition">
+                            <div class="relative pt-[56.25%]">
+                                <img src="https://via.placeholder.com/600x400/4a2545/ffffff?text=Strip+Poker" alt="Game" class="absolute inset-0 w-full h-full object-cover">
+                                <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent">
+                                    <h3 class="font-bold text-lg">Strip Poker</h3>
+                                    <p class="text-sm text-pink-300">Perde uma peça a cada rodada</p>
+                                </div>
+                                <div class="absolute top-4 right-4 bg-pink-600 text-white text-xs px-3 py-1 rounded-full">
+                                    <i class="fas fa-users mr-1"></i> 2-4
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-fire text-yellow-500 mr-2"></i>
+                                        <span class="text-sm">1,245 jogando</span>
+                                    </div>
+                                    <button class="bg-pink-600 hover:bg-pink-700 text-white text-sm py-1 px-3 rounded-full">
+                                        Jogar Agora
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Game 2 -->
+                        <div class="bg-gray-900 rounded-xl overflow-hidden neon-card transition">
+                            <div class="relative pt-[56.25%]">
+                                <img src="https://via.placeholder.com/600x400/6b21a8/ffffff?text=Roleta+Quente" alt="Game" class="absolute inset-0 w-full h-full object-cover">
+                                <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent">
+                                    <h3 class="font-bold text-lg">Roleta Quente</h3>
+                                    <p class="text-sm text-pink-300">Verdade ou Desafio com apostas</p>
+                                </div>
+                                <div class="absolute top-4 right-4 bg-purple-600 text-white text-xs px-3 py-1 rounded-full">
+                                    <i class="fas fa-user-friends mr-1"></i> 2
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-fire text-yellow-500 mr-2"></i>
+                                        <span class="text-sm">892 jogando</span>
+                                    </div>
+                                    <button class="bg-pink-600 hover:bg-pink-700 text-white text-sm py-1 px-3 rounded-full">
+                                        Jogar Agora
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Game 3 -->
+                        <div class="bg-gray-900 rounded-xl overflow-hidden neon-card transition">
+                            <div class="relative pt-[56.25%]">
+                                <img src="https://via.placeholder.com/600x400/7e22ce/ffffff?text=Quiz+Picante" alt="Game" class="absolute inset-0 w-full h-full object-cover">
+                                <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent">
+                                    <h3 class="font-bold text-lg">Quiz Picante</h3>
+                                    <p class="text-sm text-pink-300">Teste seu conhecimento por recompensas</p>
+                                </div>
+                                <div class="absolute top-4 right-4 bg-blue-600 text-white text-xs px-3 py-1 rounded-full">
+                                    <i class="fas fa-user mr-1"></i> 1
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-fire text-yellow-500 mr-2"></i>
+                                        <span class="text-sm">1,576 jogando</span>
+                                    </div>
+                                    <button class="bg-pink-600 hover:bg-pink-700 text-white text-sm py-1 px-3 rounded-full">
+                                        Jogar Agora
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Games Tab -->
+            <div id="games" class="tab-content">
+                <h2 class="text-3xl font-bold mb-8 neon-text">Nossos Minigames</h2>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Game Category 1 -->
+                    <div class="bg-gray-900 bg-opacity-70 rounded-xl p-6 neon-card transition">
+                        <div class="flex items-start mb-4">
+                            <div class="bg-pink-900 p-3 rounded-full mr-4">
+                                <i class="fas fa-users text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold mb-2">Jogos Multiplayer</h3>
+                                <p class="text-gray-300">Desafie outros jogadores em jogos interativos com recompensas sensuais.</p>
+                            </div>
+                        </div>
+                        <div class="grid gap-3">
+                            <a href="#" class="flex items-center justify-between p-3 hover:bg-gray-800 rounded-lg transition">
+                                <div class="flex items-center">
+                                    <i class="fas fa-dice mr-3 text-pink-400"></i>
+                                    <span>Strip Dados</span>
+                                </div>
+                                <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">2-6 jogadores</span>
+                            </a>
+                            <a href="#" class="flex items-center justify-between p-3 hover:bg-gray-800 rounded-lg transition">
+                                <div class="flex items-center">
+                                    <i class="fas fa-chess-queen mr-3 text-purple-400"></i>
+                                    <span>Xadrez Erótico</span>
+                                </div>
+                                <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">2 jogadores</span>
+                            </a>
+                            <a href="#" class="flex items-center justify-between p-3 hover:bg-gray-800 rounded-lg transition">
+                                <div class="flex items-center">
+                                    <i class="fas fa-question-circle mr-3 text-blue-400"></i>
+                                    <span>Roleta da Verdade</span>
+                                </div>
+                                <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">2-4 jogadores</span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Game Category 2 -->
+                    <div class="bg-gray-900 bg-opacity-70 rounded-xl p-6 neon-card transition">
+                        <div class="flex items-start mb-4">
+                            <div class="bg-purple-900 p-3 rounded-full mr-4">
+                                <i class="fas fa-user mr-3 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold mb-2">Jogos Single Player</h3>
+                                <p class="text-gray-300">Experimente desafios solo com modelos virtuais e recompensas em moedas.</p>
+                            </div>
+                        </div>
+                        <div class="grid gap-3">
+                            <a href="#" class="flex items-center justify-between p-3 hover:bg-gray-800 rounded-lg transition">
+                                <div class="flex items-center">
+                                    <i class="fas fa-brain mr-3 text-yellow-400"></i>
+                                    <span>Quiz +18</span>
+                                </div>
+                                <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">1 jogador</span>
+                            </a>
+                            <a href="#" class="flex items-center justify-between p-3 hover:bg-gray-800 rounded-lg transition">
+                                <div class="flex items-center">
+                                    <i class="fas fa-puzzle-piece mr-3 text-green-400"></i>
+                                    <span>Puzzle Sensual</span>
+                                </div>
+                                <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">1 jogador</span>
+                            </a>
+                            <a href="#" class="flex items-center justify-between p-3 hover:bg-gray-800 rounded-lg transition">
+                                <div class="flex items-center">
+                                    <i class="fas fa-memory mr-3 text-red-400"></i>
+                                    <span>Jogo da Memória</span>
+                                </div>
+                                <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">1 jogador</span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Game Category 3 -->
+                    <div class="bg-gray-900 bg-opacity-70 rounded-xl p-6 neon-card transition">
+                        <div class="flex items-start mb-4">
+                            <div class="bg-blue-900 p-3 rounded-full mr-4">
+                                <i class="fas fa-trophy text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold mb-2">Torneios</h3>
+                                <p class="text-gray-300">Participe de competições com grandes prêmios em moedas e experiências exclusivas.</p>
+                            </div>
+                        </div>
+                        <div class="grid gap-3">
+                            <a href="#" class="flex items-center justify-between p-3 hover:bg-gray-800 rounded-lg transition">
+                                <div class="flex items-center">
+                                    <i class="fas fa-chess mr-3 text-purple-400"></i>
+                                    <span>Torneio de Strip Poker</span>
+                                </div>
+                                <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">Prêmio: 50k ND</span>
+                            </a>
+                            <a href="#" class="flex items-center justify-between p-3 hover:bg-gray-800 rounded-lg transition">
+                                <div class="flex items-center">
+                                    <i class="fas fa-question mr-3 text-pink-400"></i>
+                                    <span>Desafio da Verdade</span>
+                                </div>
+                                <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">Prêmio: 30k ND</span>
+                            </a>
+                            <a href="#" class="flex items-center justify-between p-3 hover:bg-gray-800 rounded-lg transition">
+                                <div class="flex items-center">
+                                    <i class="fas fa-brain mr-3 text-yellow-400"></i>
+                                    <span>Quiz Semanal</span>
+                                </div>
+                                <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">Prêmio: 15k ND</span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Game Category 4 -->
+                    <div class="bg-gray-900 bg-opacity-70 rounded-xl p-6 neon-card transition">
+                        <div class="flex items-start mb-4">
+                            <div class="bg-red-900 p-3 rounded-full mr-4">
+                                <i class="fas fa-heart text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold mb-2">Jogos com Modelos</h3>
+                                <p class="text-gray-300">Interaja diretamente com modelos reais em jogos personalizados.</p>
+                            </div>
+                        </div>
+                        <div class="grid gap-3">
+                            <a href="#" class="flex items-center justify-between p-3 hover:bg-gray-800 rounded-lg transition">
+                                <div class="flex items-center">
+                                    <i class="fas fa-dice-d20 mr-3 text-blue-400"></i>
+                                    <span>Roleta com Modelo</span>
+                                </div>
+                                <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">500 ND/min</span>
+                            </a>
+                            <a href="#" class="flex items-center justify-between p-3 hover:bg-gray-800 rounded-lg transition">
+                                <div class="flex items-center">
+                                    <i class="fas fa-chess-board mr-3 text-purple-400"></i>
+                                    <span>Xadrez Sensual</span>
+                                </div>
+                                <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">800 ND/min</span>
+                            </a>
+                            <a href="#" class="flex items-center justify-between p-3 hover:bg-gray-800 rounded-lg transition">
+                                <div class="flex items-center">
+                                    <i class="fas fa-gamepad mr-3 text-green-400"></i>
+                                    <span>Desafio de Habilidades</span>
+                                </div>
+                                <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">1,200 ND/min</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Tab -->
+            <div id="live" class="tab-content">
+                <h2 class="text-3xl font-bold mb-8 neon-text">Interação Ao Vivo</h2>
+                
+                <div class="grid md:grid-cols-3 gap-6 mb-8">
+                    <!-- Quick Join -->
+                    <div class="md:col-span-2 bg-gray-900 bg-opacity-70 rounded-xl p-6 neon-card transition">
+                        <h3 class="text-xl font-semibold mb-4 flex items-center">
+                            <i class="fas fa-bolt text-yellow-400 mr-3"></i>
+                            Conexão Rápida
+                        </h3>
+                        <p class="text-gray-300 mb-4">Encontre rapidamente um parceiro para interação ao vivo baseado em suas preferências.</p>
+                        
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm mb-2">Interesse</label>
+                                <select class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-sm">
+                                    <option>Feminino</option>
+                                    <option>Masculino</option>
+                                    <option>Casal</option>
+                                    <option>Todos</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm mb-2">Tipo</label>
+                                <select class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-sm">
+                                    <option>Vídeo</option>
+                                    <option>Áudio</option>
+                                    <option>Texto</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button class="w-full mt-6 bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-4 rounded-lg transition pulse">
+                            <i class="fas fa-random mr-2"></i> Conectar Aleatoriamente
+                        </button>
+                    </div>
+                    
+                    <!-- Featured Room -->
+                    <div class="bg-gray-900 bg-opacity-70 rounded-xl overflow-hidden neon-card transition">
+                        <div class="relative pt-[100%]">
+                            <img src="https://via.placeholder.com/600x600/6b21a8/ffffff?text=Sala+Premium" alt="Featured" class="absolute inset-0 w-full h-full object-cover">
+                            <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent">
+                                <h3 class="font-bold text-lg">Sala VIP</h3>
+                                <p class="text-sm text-pink-300">Tema: Fantasias Eróticas</p>
+                            </div>
+                            <div class="absolute top-4 right-4 bg-red-600 text-white text-xs px-3 py-1 rounded-full">
+                                <i class="fas fa-users mr-1"></i> 24/50
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <div class="flex justify-between items-center mb-3">
+                                <div class="flex items-center">
+                                    <i class="fas fa-crown text-yellow-400 mr-2"></i>
+                                    <span class="text-sm">Host: Valentina</span>
+                                </div>
+                                <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">500 ND/min</span>
+                            </div>
+                            <button class="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg text-sm">
+                                <i class="fas fa-door-open mr-2"></i> Entrar na Sala
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Room Categories -->
+                <h3 class="text-xl font-semibold mb-4 flex items-center">
+                    <i class="fas fa-door-open text-pink-400 mr-3"></i>
+                    Salas Temáticas
+                </h3>
+                
+                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <a href="#" class="bg-gradient-to-br from-pink-900 to-purple-900 rounded-lg p-4 flex items-center justify-center h-24 neon-card transition">
+                        <div class="text-center">
+                            <i class="fas fa-user-friends text-xl mb-1"></i>
+                            <span class="text-sm">Safadeza a Dois</span>
+                        </div>
+                    </a>
+                    <a href="#" class="bg-gradient-to-br from-purple-900 to-blue-900 rounded-lg p-4 flex items-center justify-center h-24 neon-card transition">
+                        <div class="text-center">
+                            <i class="fas fa-users text-xl mb-1"></i>
+                            <span class="text-sm">Grupos Quentes</span>
+                        </div>
+                    </a>
+                    <a href="#" class="bg-gradient-to-br from-blue-900 to-green-900 rounded-lg p-4 flex items-center justify-center h-24 neon-card transition">
+                        <div class="text-center">
+                            <i class="fas fa-theater-masks text-xl mb-1"></i>
+                            <span class="text-sm">Fantasias</span>
+                        </div>
+                    </a>
+                    <a href="#" class="bg-gradient-to-br from-green-900 to-yellow-900 rounded-lg p-4 flex items-center justify-center h-24 neon-card transition">
+                        <div class="text-center">
+                            <i class="fas fa-gavel text-xl mb-1"></i>
+                            <span class="text-sm">Desafios</span>
+                        </div>
+                    </a>
+                </div>
+                
+                <!-- Active Rooms -->
+                <h3 class="text-xl font-semibold mb-4 flex items-center">
+                    <i class="fas fa-fire text-red-400 mr-3"></i>
+                    Salas Populares
+                </h3>
+                
+                <div class="bg-gray-900 bg-opacity-70 rounded-xl overflow-hidden">
+                    <div class="grid divide-y divide-gray-800">
+                        <!-- Room 1 -->
+                        <a href="#" class="p-4 hover:bg-gray-800 transition flex items-center">
+                            <div class="w-12 h-12 rounded-full overflow-hidden mr-4">
+                                <img src="https://via.placeholder.com/100x100/6b21a8/ffffff?text=S" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-center">
+                                    <h4 class="font-medium">Sala da Sophia</h4>
+                                    <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">Pública</span>
+                                </div>
+                                <p class="text-sm text-gray-400">Tema: Verdade ou Desafio</p>
+                            </div>
+                            <div class="flex items-center ml-4">
+                                <i class="fas fa-users text-sm mr-2 text-gray-400"></i>
+                                <span class="text-sm">18/25</span>
+                            </div>
+                        </a>
+                        
+                        <!-- Room 2 -->
+                        <a href="#" class="p-4 hover:bg-gray-800 transition flex items-center">
+                            <div class="w-12 h-12 rounded-full overflow-hidden mr-4">
+                                <img src="https://via.placeholder.com/100x100/7e22ce/ffffff?text=V" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-center">
+                                    <h4 class="font-medium">Noite com Valentina</h4>
+                                    <span class="text-xs bg-purple-900 px-2 py-1 rounded-full">Privada</span>
+                                </div>
+                                <p class="text-sm text-gray-400">Tema: Strip Poker</p>
+                            </div>
+                            <div class="flex items-center ml-4">
+                                <i class="fas fa-users text-sm mr-2 text-gray-400"></i>
+                                <span class="text-sm">2/2</span>
+                            </div>
+                        </a>
+                        
+                        <!-- Room 3 -->
+                        <a href="#" class="p-4 hover:bg-gray-800 transition flex items-center">
+                            <div class="w-12 h-12 rounded-full overflow-hidden mr-4">
+                                <img src="https://via.placeholder.com/100x100/d946ef/ffffff?text=I" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-center">
+                                    <h4 class="font-medium">Fantasias com Isabella</h4>
+                                    <span class="text-xs bg-pink-900 px-2 py-1 rounded-full">VIP</span>
+                                </div>
+                                <p class="text-sm text-gray-400">Tema: Roleplay</p>
+                            </div>
+                            <div class="flex items-center ml-4">
+                                <i class="fas fa-users text-sm mr-2 text-gray-400"></i>
+                                <span class="text-sm">8/10</span>
+                            </div>
+                        </a>
+                        
+                        <!-- Room 4 -->
+                        <a href="#" class="p-4 hover:bg-gray-800 transition flex items-center">
+                            <div class="w-12 h-12 rounded-full overflow-hidden mr-4">
+                                <img src="https://via.placeholder.com/100x100/a855f7/ffffff?text=C" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-center">
+                                    <h4 class="font-medium">Desafios da Camila</h4>
+                                    <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">Pública</span>
+                                </div>
+                                <p class="text-sm text-gray-400">Tema: Jogos de Habilidade</p>
+                            </div>
+                            <div class="flex items-center ml-4">
+                                <i class="fas fa-users text-sm mr-2 text-gray-400"></i>
+                                <span class="text-sm">12/20</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Models Tab -->
+            <div id="models" class="tab-content">
+                <h2 class="text-3xl font-bold mb-8 neon-text">Modelos Premium</h2>
+                
+                <!-- Model Search -->
+                <div class="bg-gray-900 bg-opacity-70 rounded-xl p-6 mb-8 neon-card transition">
+                    <div class="grid md:grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-sm mb-2">Gênero</label>
+                            <select class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-sm">
+                                <option>Todos</option>
+                                <option>Feminino</option>
+                                <option>Masculino</option>
+                                <option>Casal</option>
+                                <option>Trans</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm mb-2">Idade</label>
+                            <select class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-sm">
+                                <option>Todas</option>
+                                <option>18-25</option>
+                                <option>26-30</option>
+                                <option>31-40</option>
+                                <option>40+</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm mb-2">Tipo de Sala</label>
+                            <select class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-sm">
+                                <option>Todas</option>
+                                <option>Pública</option>
+                                <option>Privada</option>
+                                <option>Grupo</option>
+                                <option>VIP</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm mb-2">Preço</label>
+                            <select class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-sm">
+                                <option>Qualquer</option>
+                                <option>Até 500 ND/min</option>
+                                <option>500-1000 ND/min</option>
+                                <option>1000-2000 ND/min</option>
+                                <option>2000+ ND/min</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="w-full mt-4 bg-pink-600 hover:bg-pink-700 text-white py-2 px-4 rounded-lg">
+                        <i class="fas fa-search mr-2"></i> Buscar Modelos
+                    </button>
+                </div>
+                
+                <!-- Model List -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+                    <!-- Repeat this block for each model -->
+                    <div class="bg-gray-900 rounded-xl overflow-hidden neon-card transition">
+                        <div class="relative pt-[100%]">
+                            <img src="https://via.placeholder.com/300x300/6b21a8/ffffff?text=Model+1" alt="Model" class="absolute inset-0 w-full h-full object-cover">
+                            <div class="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black to-transparent">
+                                <p class="font-semibold">Sophia</p>
+                                <p class="text-xs text-pink-300">25 anos</p>
+                            </div>
+                            <div class="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded-full flex items-center">
+                                <i class="fas fa-circle text-xs mr-1"></i> AO VIVO
+                            </div>
+                            <div class="absolute top-2 right-2 bg-yellow-600 text-white text-xs px-2 py-1 rounded-full">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                        </div>
+                        <div class="p-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-400">Sala Pública</span>
+                                <span class="text-xs text-yellow-400">1,250 ND/min</span>
+                            </div>
+                            <button class="w-full mt-2 bg-pink-600 hover:bg-pink-700 text-white text-xs py-1 px-2 rounded">
+                                Entrar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Model 2 -->
+                    <div class="bg-gray-900 rounded-xl overflow-hidden neon-card transition">
+                        <div class="relative pt-[100%]">
+                            <img src="https://via.placeholder.com/300x300/7e22ce/ffffff?text=Model+2" alt="Model" class="absolute inset-0 w-full h-full object-cover">
+                            <div class="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black to-transparent">
+                                <p class="font-semibold">Valentina</p>
+                                <p class="text-xs text-pink-300">28 anos</p>
+                            </div>
+                            <div class="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded-full flex items-center">
+                                <i class="fas fa-circle text-xs mr-1"></i> AO VIVO
+                            </div>
+                        </div>
+                        <div class="p-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-400">Privado</span>
+                                <span class="text-xs text-yellow-400">2,500 ND/min</span>
+                            </div>
+                            <button class="w-full mt-2 bg-pink-600 hover:bg-pink-700 text-white text-xs py-1 px-2 rounded">
+                                Entrar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Model 3 -->
+                    <div class="bg-gray-900 rounded-xl overflow-hidden neon-card transition">
+                        <div class="relative pt-[100%]">
+                            <img src="https://via.placeholder.com/300x300/d946ef/ffffff?text=Model+3" alt="Model" class="absolute inset-0 w-full h-full object-cover">
+                            <div class="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black to-transparent">
+                                <p class="font-semibold">Isabella</p>
+                                <p class="text-xs text-pink-300">22 anos</p>
+                            </div>
+                            <div class="absolute top-2 left-2 bg-gray-600 text-white text-xs px-2 py-1 rounded-full flex items-center">
+                                <i class="fas fa-circle text-xs mr-1"></i> OFFLINE
+                            </div>
+                        </div>
+                        <div class="p-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-400">Grupo (5/10)</span>
+                                <span class="text-xs text-yellow-400">800 ND/min</span>
+                            </div>
+                            <button class="w-full mt-2 bg-gray-700 text-white text-xs py-1 px-2 rounded cursor-not-allowed" disabled>
+                                Offline
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Model 4 -->
+                    <div class="bg-gray-900 rounded-xl overflow-hidden neon-card transition">
+                        <div class="relative pt-[100%]">
+                            <img src="https://via.placeholder.com/300x300/a855f7/ffffff?text=Model+4" alt="Model" class="absolute inset-0 w-full h-full object-cover">
+                            <div class="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black to-transparent">
+                                <p class="font-semibold">Camila</p>
+                                <p class="text-xs text-pink-300">30 anos</p>
+                            </div>
+                            <div class="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded-full flex items-center">
+                                <i class="fas fa-circle text-xs mr-1"></i> AO VIVO
+                            </div>
+                        </div>
+                        <div class="p-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-400">Sala Temática</span>
+                                <span class="text-xs text-yellow-400">1,800 ND/min</span>
+                            </div>
+                            <button class="w-full mt-2 bg-pink-600 hover:bg-pink-700 text-white text-xs py-1 px-2 rounded">
+                                Entrar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Model 5 -->
+                    <div class="bg-gray-900 rounded-xl overflow-hidden neon-card transition">
+                        <div class="relative pt-[100%]">
+                            <img src="https://via.placeholder.com/300x300/c026d3/ffffff?text=Model+5" alt="Model" class="absolute inset-0 w-full h-full object-cover">
+                            <div class="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black to-transparent">
+                                <p class="font-semibold">Ana</p>
+                                <p class="text-xs text-pink-300">26 anos</p>
+                            </div>
+                            <div class="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded-full flex items-center">
+                                <i class="fas fa-circle text-xs mr-1"></i> AO VIVO
+                            </div>
+                            <div class="absolute top-2 right-2 bg-yellow-600 text-white text-xs px-2 py-1 rounded-full">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                        </div>
+                        <div class="p-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-400">Privado</span>
+                                <span class="text-xs text-yellow-400">3,000 ND/min</span>
+                            </div>
+                            <button class="w-full mt-2 bg-pink-600 hover:bg-pink-700 text-white text-xs py-1 px-2 rounded">
+                                Entrar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="flex justify-center mt-8">
+                    <nav class="flex items-center space-x-1">
+                        <button class="px-3 py-1 rounded bg-gray-800 text-gray-400">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="px-3 py-1 rounded bg-pink-600 text-white">1</button>
+                        <button class="px-3 py-1 rounded bg-gray-800 hover:bg-gray-700 text-gray-300">2</button>
+                        <button class="px-3 py-1 rounded bg-gray-800 hover:bg-gray-700 text-gray-300">3</button>
+                        <span class="px-2 text-gray-500">...</span>
+                        <button class="px-3 py-1 rounded bg-gray-800 hover:bg-gray-700 text-gray-300">10</button>
+                        <button class="px-3 py-1 rounded bg-gray-800 text-gray-400">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Community Tab -->
+            <div id="community" class="tab-content">
+                <h2 class="text-3xl font-bold mb-8 neon-text">Comunidade</h2>
+                
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Community Stats -->
+                    <div class="md:col-span-2 bg-gray-900 bg-opacity-70 rounded-xl p-6 neon-card transition">
+                        <h3 class="text-xl font-semibold mb-6 flex items-center">
+                            <i class="fas fa-chart-line text-green-400 mr-3"></i>
+                            Estatísticas da Comunidade
+                        </h3>
+                        
+                        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="text-center">
+                                <div class="text-4xl font-bold text-pink-400 mb-2">12,458</div>
+                                <div class="text-sm text-gray-400">Usuários Online</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-4xl font-bold text-purple-400 mb-2">3,287</div>
+                                <div class="text-sm text-gray-400">Modelos Ativas</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-4xl font-bold text-blue-400 mb-2">45,921</div>
+                                <div class="text-sm text-gray-400">Salas Ativas</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-4xl font-bold text-yellow-400 mb-2">1.2M</div>
+                                <div class="text-sm text-gray-400">Interações/Dia</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-4xl font-bold text-red-400 mb-2">98%</div>
+                                <div class="text-sm text-gray-400">Satisfação</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-4xl font-bold text-green-400 mb-2">24/7</div>
+                                <div class="text-sm text-gray-400">Moderação Ativa</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Become a Model -->
+                    <div class="bg-gradient-to-br from-pink-900 to-purple-900 rounded-xl p-6 neon-card transition">
+                        <h3 class="text-xl font-semibold mb-4 flex items-center">
+                            <i class="fas fa-star text-yellow-400 mr-3"></i>
+                            Torne-se um Modelo
+                        </h3>
+                        <p class="text-gray-300 mb-6">Ganhe dinheiro compartilhando sua sensualidade com nossa comunidade.</p>
+                        
+                        <ul class="space-y-3 mb-6">
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-green-400 mr-2"></i>
+                                <span>Ganhe até R$ 5.000/mês</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-green-400 mr-2"></i>
+                                <span>Horários flexíveis</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-green-400 mr-2"></i>
+                                <span>Pagamentos seguros</span>
+                            </li>
+                        </ul>
+                        
+                        <button class="w-full bg-white hover:bg-gray-200 text-pink-900 font-bold py-2 px-4 rounded-lg transition">
+                            Saiba Mais
+                        </button>
+                    </div>
+                    
+                    <!-- Recent Activity -->
+                    <div class="md:col-span-2 bg-gray-900 bg-opacity-70 rounded-xl p-6 neon-card transition">
+                        <h3 class="text-xl font-semibold mb-6 flex items-center">
+                            <i class="fas fa-rss text-blue-400 mr-3"></i>
+                            Atividade Recente
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <!-- Activity 1 -->
+                            <div class="flex items-start pb-4 border-b border-gray-800">
+                                <img src="https://via.placeholder.com/50x50/6b21a8/ffffff?text=User1" class="w-10 h-10 rounded-full mr-3">
+                                <div>
+                                    <div class="flex items-center mb-1">
+                                        <span class="font-medium mr-2">User123</span>
+                                        <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">Novato</span>
+                                    </div>
+                                    <p class="text-sm text-gray-300">Ganhou 500 ND no Strip Poker com Sophia</p>
+                                    <p class="text-xs text-gray-500 mt-1">5 minutos atrás</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Activity 2 -->
+                            <div class="flex items-start pb-4 border-b border-gray-800">
+                                <img src="https://via.placeholder.com/50x50/7e22ce/ffffff?text=User2" class="w-10 h-10 rounded-full mr-3">
+                                <div>
+                                    <div class="flex items-center mb-1">
+                                        <span class="font-medium mr-2">HotGuy99</span>
+                                        <span class="text-xs bg-yellow-900 px-2 py-1 rounded-full">VIP</span>
+                                    </div>
+                                    <p class="text-sm text-gray-300">Desbloqueou cena especial com Valentina</p>
+                                    <p class="text-xs text-gray-500 mt-1">15 minutos atrás</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Activity 3 -->
+                            <div class="flex items-start pb-4 border-b border-gray-800">
+                                <img src="https://via.placeholder.com/50x50/d946ef/ffffff?text=User3" class="w-10 h-10 rounded-full mr-3">
+                                <div>
+                                    <div class="flex items-center mb-1">
+                                        <span class="font-medium mr-2">CuriousGirl</span>
+                                        <span class="text-xs bg-pink-900 px-2 py-1 rounded-full">Modelo</span>
+                                    </div>
+                                    <p class="text-sm text-gray-300">Iniciou nova sala temática "Fantasias Proibidas"</p>
+                                    <p class="text-xs text-gray-500 mt-1">30 minutos atrás</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Activity 4 -->
+                            <div class="flex items-start">
+                                <img src="https://via.placeholder.com/50x50/a855f7/ffffff?text=User4" class="w-10 h-10 rounded-full mr-3">
+                                <div>
+                                    <div class="flex items-center mb-1">
+                                        <span class="font-medium mr-2">LuckyPlayer</span>
+                                        <span class="text-xs bg-green-900 px-2 py-1 rounded-full">Sortudo</span>
+                                    </div>
+                                    <p class="text-sm text-gray-300">Ganhou torneio de Roleta da Verdade (Prêmio: 10k ND)</p>
+                                    <p class="text-xs text-gray-500 mt-1">1 hora atrás</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Community Guidelines -->
+                    <div class="bg-gray-900 bg-opacity-70 rounded-xl p-6 neon-card transition">
+                        <h3 class="text-xl font-semibold mb-4 flex items-center">
+                            <i class="fas fa-gavel text-red-400 mr-3"></i>
+                            Regras da Comunidade
+                        </h3>
+                        
+                        <div class="space-y-3 text-sm text-gray-300">
+                            <p><i class="fas fa-check-circle text-green-400 mr-2"></i> Todos os participantes devem ter 18+</p>
+                            <p><i class="fas fa-check-circle text-green-400 mr-2"></i> Respeite os limites de cada pessoa</p>
+                            <p><i class="fas fa-check-circle text-green-400 mr-2"></i> Nenhum conteúdo ilegal é permitido</p>
+                            <p><i class="fas fa-check-circle text-green-400 mr-2"></i> Consenso é obrigatório em todas as interações</p>
+                            <p><i class="fas fa-check-circle text-green-400 mr-2"></i> Denuncie comportamentos inadequados</p>
+                        </div>
+                        
+                        <div class="mt-6 p-4 bg-gray-800 rounded-lg">
+                            <h4 class="font-semibold mb-2 text-pink-400">Moderação 24/7</h4>
+                            <p class="text-xs text-gray-400">Nossa equipe está sempre online para garantir uma experiência segura e divertida para todos.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-black bg-opacity-70 border-t border-purple-900 mt-12">
+            <div class="container mx-auto px-4 py-8">
+                <div class="grid md:grid-cols-4 gap-8">
+                    <div>
+                        <div class="flex items-center space-x-2 mb-4">
+                            <i class="fas fa-gamepad text-2xl text-pink-500"></i>
+                            <h3 class="text-xl font-bold neon-text">NeonDesire Arcade</h3>
+                        </div>
+                        <p class="text-sm text-gray-400">A plataforma de entretenimento adulto mais interativa e segura da internet.</p>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-lg font-semibold mb-4 text-pink-400">Links Rápidos</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-gray-400 hover:text-pink-300 text-sm">Início</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-pink-300 text-sm">Minigames</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-pink-300 text-sm">Modelos</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-pink-300 text-sm">Comunidade</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-lg font-semibold mb-4 text-pink-400">Suporte</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-gray-400 hover:text-pink-300 text-sm">Central de Ajuda</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-pink-300 text-sm">Termos de Uso</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-pink-300 text-sm">Política de Privacidade</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-pink-300 text-sm">Denunciar Abuso</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-lg font-semibold mb-4 text-pink-400">Contato</h4>
+                        <ul class="space-y-2">
+                            <li class="flex items-center text-gray-400 text-sm"><i class="fas fa-envelope mr-2"></i> contato@neondesire.com</li>
+                            <li class="flex items-center text-gray-400 text-sm"><i class="fas fa-shield-alt mr-2"></i> SSL Protegido</li>
+                            <li class="flex items-center text-gray-400 text-sm"><i class="fas fa-lock mr-2"></i> Dados Criptografados</li>
+                        </ul>
+                        <div class="flex space-x-4 mt-4">
+                            <a href="#" class="text-gray-400 hover:text-pink-300"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="text-gray-400 hover:text-pink-300"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="text-gray-400 hover:text-pink-300"><i class="fab fa-discord"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="border-t border-gray-800 mt-8 pt-6 text-center">
+                    <p class="text-xs text-gray-500">© 2023 NeonDesire Arcade. Todos os direitos reservados. Conteúdo exclusivo para maiores de 18 anos.</p>
+                    <p class="text-xs text-gray-600 mt-1">Este site é protegido por reCAPTCHA e está sujeito à Política de Privacidade e Termos de Serviço do Google.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Age verification
+        function verifyAge(isAdult) {
+            const modal = document.getElementById('ageModal');
+            const mainContent = document.getElementById('mainContent');
+            
+            if (isAdult) {
+                modal.classList.add('hidden');
+                mainContent.classList.remove('hidden');
+                // In a real app, you would set a cookie or localStorage here
+            } else {
+                window.location.href = 'https://www.google.com';
+            }
+        }
+
+        // Tab functionality
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all buttons
+                document.querySelectorAll('.tab-btn').forEach(b => {
+                    b.classList.remove('bg-pink-900', 'text-white');
+                    b.classList.add('hover:bg-gray-800', 'text-gray-400');
+                });
+                
+                // Add active class to clicked button
+                this.classList.remove('hover:bg-gray-800', 'text-gray-400');
+                this.classList.add('bg-pink-900', 'text-white');
+                
+                // Hide all tab contents
+                document.querySelectorAll('.tab-content').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                
+                // Show selected tab content
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Simulate pulse animation for CTAs
+        const pulseElements = document.querySelectorAll('.pulse');
+        pulseElements.forEach(el => {
+            setInterval(() => {
+                el.classList.toggle('neon-border');
+            }, 2000);
+        });
+    </script>
+<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://enzostvs-deepsite.hf.space" style="color: #fff;text-decoration: underline;" target="_blank" >DeepSite</a> - 🧬 <a href="https://enzostvs-deepsite.hf.space?remix=Magricelas/rapaiz" style="color: #fff;text-decoration: underline;" target="_blank" >Remix</a></p></body>
+</html>
